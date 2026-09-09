@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vaishali Chat</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#d8dbd5}
+.app{max-width:520px;height:100vh;margin:auto;background:#fff;position:relative;overflow:hidden}
+
+/* LOGIN */
+#loginPage{
+height:100%;display:flex;align-items:center;justify-content:center;
+padding:20px;background:#075e54
+}
+.login-box{
+width:100%;background:white;padding:28px 22px;border-radius:18px;
+text-align:center;box-shadow:0 5px 25px #0004
+}
+.logo{
+width:80px;height:80px;margin:auto;border-radius:50%;
+background:#25d366;color:white;display:flex;align-items:center;
+justify-content:center;font-size:42px;font-weight:bold
+}
+.login-box h1{margin:15px 0 5px;color:#075e54}
+.login-box p{color:#667781;margin-bottom:18px}
+.login-box input{
+width:100%;padding:13px;margin:6px 0;border:1px solid #ddd;
+border-radius:8px;outline:none;font-size:15px
+}
+.login-box button{
+width:100%;padding:13px;margin-top:8px;border:0;border-radius:8px;
+background:#128c7e;color:white;font-size:16px;cursor:pointer
+}
+#name{display:none}
+
+/* HOME */
+#home{display:none;height:100%}
+.header{
+height:62px;background:#075e54;color:white;display:flex;
+align-items:center;padding:8px 12px;gap:10px
+}
+.vlogo{
+width:43px;height:43px;border-radius:50%;background:#25d366;
+display:flex;align-items:center;justify-content:center;font-weight:bold
+}
+.header-title{flex:1}
+.header-title h2{font-size:19px}
+.header-title small{font-size:11px;opacity:.8}
+.header button{background:none;border:0;color:white;font-size:22px;cursor:pointer}
+
+.search{padding:9px;background:#f0f2f5}
+.search input{
+width:100%;padding:11px 15px;border:0;outline:none;border-radius:22px
+}
+
+#users{height:calc(100% - 135px);overflow-y:auto}
+.user{
+height:72px;padding:9px 12px;display:flex;align-items:center;
+gap:12px;border-bottom:1px solid #eee;cursor:pointer
+}
+.user:hover{background:#f5f5f5}
+.avatar{
+width:52px;height:52px;min-width:52px;border-radius:50%;
+background:linear-gradient(135deg,#25d366,#128c7e);color:white;
+display:flex;align-items:center;justify-content:center;font-weight:bold
+}
+.user-info{flex:1}
+.user-info b{font-size:16px}
+.user-info p{font-size:13px;color:#667781;margin-top:5px}
+
+.logout{
+margin:8px 20px;width:calc(100% - 40px);padding:10px;
+border:0;border-radius:8px;background:#e53935;color:white
+}
+
+/* CHAT */
+#chat{
+display:none;position:absolute;inset:0;background:#efeae2;
+flex-direction:column;z-index:10
+}
+.chat-header{
+height:62px;background:#075e54;color:white;display:flex;
+align-items:center;padding:8px;gap:9px
+}
+.back{
+background:none;border:0;color:white;font-size:30px;cursor:pointer
+}
+.chat-head-avatar{
+width:43px;height:43px;min-width:43px;border-radius:50%;
+background:#25d366;color:white;display:flex;align-items:center;
+justify-content:center;font-weight:bold
+}
+.chat-info{flex:1}
+.chat-info b{display:block}
+.chat-info small{opacity:.8}
+
+.messages{
+flex:1;overflow-y:auto;padding:12px;
+background:#efeae2;
+background-image:radial-gradient(#d8d1c7 1px,transparent 1px);
+background-size:18px 18px
+}
+.msg{
+max-width:78%;padding:8px 10px;margin:5px 0;
+border-radius:8px;font-size:14px;line-height:19px;
+box-shadow:0 1px 1px #0002;word-break:break-word
+}
+.received{background:white;margin-right:auto}
+.sent{background:#d9fdd3;margin-left:auto}
+.msg-time{
+display:block;text-align:right;color:#667781;font-size:9px;margin-top:3px
+}
+
+.input-area{
+min-height:60px;background:#f0f2f5;display:flex;
+gap:7px;align-items:center;padding:7px
+}
+.input-area input{
+flex:1;border:0;outline:none;padding:12px 15px;
+border-radius:22px;font-size:15px
+}
+.send{
+width:45px;height:45px;border:0;border-radius:50%;
+background:#128c7e;color:white;font-size:20px;cursor:pointer
+}
+
+/* PROFILE */
+#profile{
+display:none;position:absolute;inset:0;background:#f5f6f6;z-index:20
+}
+.profile-head{
+height:62px;background:#075e54;color:white;display:flex;
+align-items:center;gap:10px;padding:10px
+}
+.profile-head button{
+border:0;background:none;color:white;font-size:30px
+}
+.profile-body{text-align:center;padding:35px 20px}
+.profile-avatar{
+width:120px;height:120px;border-radius:50%;background:#25d366;
+color:white;display:flex;align-items:center;justify-content:center;
+font-size:55px;font-weight:bold;margin:auto
+}
+.profile-body h2{margin-top:15px}
+.card{
+background:white;text-align:left;padding:16px;border-radius:10px;margin-top:20px
+}
+.card small{color:#667781}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- LOGIN -->
+<div id="loginPage">
+<div class="login-box">
+
+<div class="logo">V</div>
+<h1>Vaishali Chat</h1>
+<p>Chat • Connect • Share</p>
+
+<input id="name" type="text" placeholder="Your name">
+<input id="email" type="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button id="loginBtn">Login</button>
+<button id="signupBtn" style="background:#25d366">
+Create Account
+</button>
+
+</div>
+</div>
+
+
+<!-- HOME -->
+<div id="home">
+
+<div class="header">
+
+<div class="vlogo">V</div>
+
+<div class="header-title">
+<h2>Vaishali Chat</h2>
+<small id="myEmail"></small>
+</div>
+
+<button id="profileBtn">👤</button>
+
+</div>
+
+<div class="search">
+<input id="search" placeholder="Search users...">
+</div>
+
+<div id="users"></div>
+
+<button class="logout" id="logoutBtn">Logout</button>
+
+</div>
+
+
+<!-- CHAT -->
+<div id="chat">
+
+<div class="chat-header">
+
+<button class="back" id="backBtn">‹</button>
+
+<div id="chatAvatar" class="chat-head-avatar">V</div>
+
+<div class="chat-info">
+<b id="chatName">User</b>
+<small id="chatStatus">Online</small>
+</div>
+
+</div>
+
+<div id="messages" class="messages"></div>
+
+<div class="input-area">
+<input id="message" placeholder="Type a message...">
+<button class="send" id="sendBtn">➤</button>
+</div>
+
+</div>
+
+
+<!-- PROFILE -->
+<div id="profile">
+
+<div class="profile-head">
+<button id="closeProfile">‹</button>
+<h2>Profile</h2>
+</div>
+
+<div class="profile-body">
+
+<div id="profileAvatar" class="profile-avatar">V</div>
+
+<h2 id="profileName">User</h2>
+
+<div class="card">
+<b>Email</b><br>
+<small id="profileEmail"></small>
+</div>
+
+</div>
+</div>
+
+</div>
+
+
+<script type="module">
+
+import {initializeApp}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged,
+updateProfile
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs,
+query,
+orderBy,
+onSnapshot,
+serverTimestamp,
+doc,
+setDoc
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig={
+apiKey:"AIzaSyBU1kTmY9Pu0UKpNAn4vNEGGEVFPmSYh8I",
+authDomain:"vaishali-chat.firebaseapp.com",
+projectId:"vaishali-chat",
+storageBucket:"vaishali-chat.firebasestorage.app",
+messagingSenderId:"706099547041",
+appId:"1:706099547041:web:22d8792a0057148b8699e0",
+measurementId:"G-0PDG96LBYV"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+let currentUser=null;
+let currentChatUser=null;
+let stopMessages=null;
+
+
+/* LOGIN */
+
+document.getElementById("loginBtn").onclick=async()=>{
+
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
+
+if(!email||!password){
+alert("Email और password डालें");
+return;
+}
+
+try{
+await signInWithEmailAndPassword(auth,email,password);
+}catch(e){
+alert(e.message);
+}
+
+};
+
+
+/* SIGNUP */
+
+document.getElementById("signupBtn").onclick=async()=>{
+
+const nameBox=document.getElementById("name");
+
+if(nameBox.style.display!=="block"){
+nameBox.style.display="block";
+nameBox.focus();
+return;
+}
+
+const name=nameBox.value.trim();
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
+
+if(!name){
+alert("अपना नाम डालें");
+return;
+}
+
+if(password.length<6){
+alert("Password कम से कम 6 characters का रखें");
+return;
+}
+
+try{
+
+const result=await createUserWithEmailAndPassword(
+auth,email,password
+);
+
+await updateProfile(result.user,{
+displayName:name
+});
+
+await setDoc(
+doc(db,"users",result.user.uid),
+{
+uid:result.user.uid,
+name:name,
+email:email,
+createdAt:serverTimestamp()
+}
+);
+
+alert("Account बन गया ✅");
+
+}catch(e){
+alert(e.message);
+}
+
+};
+
+
+/* AUTH STATE */
+
+onAuthStateChanged(auth,user=>{
+
+if(user){
+
+currentUser=user;
+
+document.getElementById("loginPage").style.display="none";
+document.getElementById("home").style.display="block";
+
+document.getElementById("myEmail").textContent=user.email;
+
+loadUsers();
+
+}else{
+
+currentUser=null;
+
+document.getElementById("loginPage").style.display="flex";
+document.getElementById("home").style.display="none";
+}
+
+});
+
+
+/* USERS */
+
+async function loadUsers(){
+
+const box=document.getElementById("users");
+box.innerHTML="";
+
+try{
+
+const snap=await getDocs(collection(db,"users"));
+
+snap.forEach(s=>{
+
+const u=s.data();
+
+if(u.uid===currentUser.uid)return;
+
+const div=document.createElement("div");
+div.className="user";
+div.dataset.name=u.name||"";
+
+const initials=(u.name||"U").substring(0,2).toUpperCase();
+
+div.innerHTML=`
+<div class="avatar">${initials}</div>
+<div class="user-info">
+<b>${safe(u.name||"User")}</b>
+<p>Tap to chat</p>
+</div>
+`;
+
+div.onclick=()=>openChat(u);
+
+box.appendChild(div);
+
+});
+
+}catch(e){
+
+console.error(e);
+
+box.innerHTML=
+"<p style='padding:20px'>Users load नहीं हुए। Firestore Rules check करें।";
+
+}
+
+}
+
+
+/* OPEN CHAT */
+
+function openChat(user){
+
+currentChatUser=user;
+
+document.getElementById("chat").style.display="flex";
+
+document.getElementById("chatName").textContent=user.name;
+
+document.getElementById("chatAvatar").textContent=
+user.name.substring(0,2).toUpperCase();
+
+listenMessages();
+
+}
+
+
+/* CHAT ID */
+
+function chatId(){
+
+return[
+currentUser.uid,
+currentChatUser.uid
+].sort().join("_");
+
+}
+
+
+/* REAL-TIME */
+
+function listenMessages(){
+
+if(stopMessages)stopMessages();
+
+const ref=collection(
+db,
+"chats",
+chatId(),
+"messages"
+);
+
+const q=query(ref,orderBy("createdAt","asc"));
+
+stopMessages=onSnapshot(q,snap=>{
+
+const box=document.getElementById("messages");
+
+box.innerHTML="";
+
+snap.forEach(s=>{
+
+const m=s.data();
+
+const div=document.createElement("div");
+
+div.className=
+"msg "+
+(m.senderId===currentUser.uid?"sent":"received");
+
+let time="";
+
+if(m.createdAt){
+
+time=m.createdAt.toDate().toLocaleTimeString(
+[],
+{hour:"2-digit",minute:"2-digit"}
+);
+
+}
+
+div.innerHTML=
+safe(m.text||"")+
+`<span class="msg-time">${time}</span>`;
+
+box.appendChild(div);
+
+});
+
+box.scrollTop=box.scrollHeight;
+
+});
+
+}
+
+
+/* SEND */
+
+async function sendMessage(){
+
+const input=document.getElementById("message");
+const text=input.value.trim();
+
+if(!text||!currentChatUser)return;
+
+try{
+
+await addDoc(
+collection(
+db,
+"chats",
+chatId(),
+"messages"
+),
+{
+text:text,
+senderId:currentUser.uid,
+receiverId:currentChatUser.uid,
+createdAt:serverTimestamp()
+}
+);
+
+input.value="";
+
+}catch(e){
+
+alert(e.message);
+
+}
+
+}
+
+
+document.getElementById("sendBtn").onclick=sendMessage;
+
+document.getElementById("message").onkeydown=e=>{
+if(e.key==="Enter")sendMessage();
+};
+
+
+/* BACK */
+
+document.getElementById("backBtn").onclick=()=>{
+
+document.getElementById("chat").style.display="none";
+
+if(stopMessages){
+stopMessages();
+stopMessages=null;
+}
+
+};
+
+
+/* SEARCH */
+
+document.getElementById("search").oninput=e=>{
+
+const text=e.target.value.toLowerCase();
+
+document.querySelectorAll(".user").forEach(u=>{
+
+u.style.display=
+u.dataset.name.toLowerCase().includes(text)
+?"flex":"none";
+
+});
+
+};
+
+
+/* PROFILE */
+
+document.getElementById("profileBtn").onclick=()=>{
+
+const name=currentUser.displayName||"User";
+
+document.getElementById("profile").style.display="block";
+
+document.getElementById("profileName").textContent=name;
+
+document.getElementById("profileEmail").textContent=
+currentUser.email;
+
+document.getElementById("profileAvatar").textContent=
+name.substring(0,1).toUpperCase();
+
+};
+
+document.getElementById("closeProfile").onclick=()=>{
+document.getElementById("profile").style.display="none";
+};
+
+
+/* LOGOUT */
+
+document.getElementById("logoutBtn").onclick=async()=>{
+await signOut(auth);
+};
+
+
+/* SAFE TEXT */
+
+function safe(text){
+
+const d=document.createElement("div");
+d.textContent=text;
+return d.innerHTML;
+
+}
+
+</script>
+
+</body>
+</html>
